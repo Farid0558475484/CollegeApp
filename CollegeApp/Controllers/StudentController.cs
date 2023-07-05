@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using CollegeApp.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -66,10 +65,8 @@ namespace CollegeApp.Controllers
                 return NotFound("Student not found with the specified name ");
             return Ok(student);
         }
-        
-        
-        
-        
+
+
         [HttpPost]
         [Route("Create")]
         [ProducesResponseType(201)]
@@ -79,7 +76,7 @@ namespace CollegeApp.Controllers
         {
             // if(!ModelState.IsValid)
             //     return BadRequest(ModelState);
-                
+
             if (model == null)
                 return BadRequest();
 
@@ -99,15 +96,31 @@ namespace CollegeApp.Controllers
             };
 
             CollegeRepository.Students?.Add(student);
-            model.Id=student.Id;
-            return CreatedAtRoute("GetStudentById", new {id = student.Id}, model);
-         
-
+            model.Id = student.Id;
+            return CreatedAtRoute("GetStudentById", new { id = student.Id }, model);
         }
 
 
-        
-        
+        [HttpPut]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public ActionResult<StudentDTO> UpdateStudent([FromBody] StudentDTO model)
+        {
+            if (model == null || model.Id <= 0)
+                return BadRequest();
+
+            var existingStudent = CollegeRepository.Students?.Where(n => n.Id == model.Id).FirstOrDefault();
+            if (existingStudent == null)
+                return NotFound($"Student not found with the specified {model.Id} ");
+            existingStudent.StudentName = model.StudentName;
+            existingStudent.Email = model.Email;
+            existingStudent.Address = model.Address;
+            return Ok(existingStudent);
+        }
+
+
         [HttpDelete]
         [Route("{id:int}", Name = "DeleteStudentById")]
         [ProducesResponseType(200)]
