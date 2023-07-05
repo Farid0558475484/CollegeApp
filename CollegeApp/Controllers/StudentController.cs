@@ -13,8 +13,17 @@ namespace CollegeApp.Controllers
         [Route("All", Name = "GetAllStudents")]
         [ProducesResponseType(200)]
         [ProducesResponseType(500)]
-        public ActionResult<IEnumerable<Student>> GetStudents()
+        public ActionResult<IEnumerable<StudentDTO>> GetStudents()
         {
+            var students = CollegeRepository.Students.Select(s => new StudentDTO()
+                {
+                    Id = s.Id,
+                    StudentName = s.StudentName,
+                    Email = s.Email,
+                    Address = s.Address,
+                }
+            );
+
             return Ok(CollegeRepository.Students);
         }
 
@@ -32,7 +41,7 @@ namespace CollegeApp.Controllers
             if (id <= 0)
                 return BadRequest();
 
-            var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
+            var student = CollegeRepository.Students?.Where(n => n.Id == id).FirstOrDefault();
             if (student == null)
                 return NotFound("Student not found with the specified id ");
 
@@ -56,6 +65,31 @@ namespace CollegeApp.Controllers
                 return NotFound("Student not found with the specified name ");
             return Ok(student);
         }
+        
+        [HttpPost]
+        [Route("Create")]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public ActionResult<Student> CreateStudent([FromBody] Student model)
+        {
+            if (model == null)
+                return BadRequest();
+
+            int newId = CollegeRepository.Students.LastOrDefault().Id + 1;
+            Student student = new Student
+            {
+                Id = newId,
+                StudentName = model.StudentName,
+                Email = model.Email,
+                Address = model.Address
+            };
+
+            CollegeRepository.Students?.Add(student);
+            model.Id=student.Id;
+            return Ok(model);
+
+        }
 
 
         [HttpDelete]
@@ -70,12 +104,12 @@ namespace CollegeApp.Controllers
                 return BadRequest();
 
 
-            var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
+            var student = CollegeRepository.Students?.Where(n => n.Id == id).FirstOrDefault();
             if (student == null)
                 return NotFound($"Student not found with the specified {id} ");
 
 
-            CollegeRepository.Students.Remove(student);
+            CollegeRepository.Students?.Remove(student);
             return Ok();
         }
     }
