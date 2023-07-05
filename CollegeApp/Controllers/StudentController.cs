@@ -11,6 +11,8 @@ namespace CollegeApp.Controllers
     {
         [HttpGet]
         [Route("All", Name = "GetAllStudents")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(500)]
         public ActionResult<IEnumerable<Student>> GetStudents()
         {
             return Ok(CollegeRepository.Students);
@@ -19,6 +21,10 @@ namespace CollegeApp.Controllers
 
         [HttpGet]
         [Route("{id:int}", Name = "GetStudentById")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public ActionResult<Student> GetStudentbyId(int id)
 
 
@@ -36,6 +42,10 @@ namespace CollegeApp.Controllers
 
         [HttpGet]
         [Route("{name:alpha}", Name = "GetStudentByName")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public ActionResult<Student> GetStudentByName(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -50,6 +60,10 @@ namespace CollegeApp.Controllers
 
         [HttpDelete]
         [Route("{id:int}", Name = "DeleteStudentById")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public ActionResult<bool> DeleteStudent(int id)
         {
             if (id <= 0)
@@ -59,7 +73,7 @@ namespace CollegeApp.Controllers
             var student = CollegeRepository.Students.Where(n => n.Id == id).FirstOrDefault();
             if (student == null)
                 return NotFound($"Student not found with the specified {id} ");
-           
+
 
             CollegeRepository.Students.Remove(student);
             return Ok();
