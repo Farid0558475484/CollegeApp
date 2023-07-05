@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CollegeApp.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollegeApp.Controllers
@@ -102,11 +103,12 @@ namespace CollegeApp.Controllers
 
 
         [HttpPut]
-        [ProducesResponseType(204)]
+        [Route("Update")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
-        public ActionResult<StudentDTO> UpdateStudent([FromBody] StudentDTO model)
+        public ActionResult UpdateStudent([FromBody] StudentDTO model)
         {
             if (model == null || model.Id <= 0)
                 return BadRequest();
@@ -117,7 +119,43 @@ namespace CollegeApp.Controllers
             existingStudent.StudentName = model.StudentName;
             existingStudent.Email = model.Email;
             existingStudent.Address = model.Address;
-            return Ok(existingStudent);
+            return NoContent();
+        }
+        
+        
+        [HttpPatch]
+        [Route("{id}/UpdatePartial")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
+        public ActionResult UpdateStudentPartial(int id, [FromBody] JsonPatchDocument<StudentDTO> patchDocument)
+        {
+            if (patchDocument == null || id <= 0)
+                return BadRequest();
+
+            var existingStudent = CollegeRepository.Students?.Where(n => n.Id == id).FirstOrDefault();
+            if (existingStudent == null)
+                return NotFound();
+            
+            var studentDTO = new StudentDTO()
+            {
+                Id = existingStudent.Id,
+                StudentName = existingStudent.StudentName,
+                Email = existingStudent.Email,
+                Address = existingStudent.Address
+            };
+            
+            patchDocument.ApplyTo(studentDTO, ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            
+            existingStudent.StudentName = studentDTO.StudentName;
+            existingStudent.Email = studentDTO.Email;
+            existingStudent.Address = studentDTO.Address;
+            
+
+            return NoContent();
         }
 
 

@@ -64,3 +64,7 @@
 /Users/xamyak/Desktop/CollegeApp/CollegeApp/obj/Debug/net7.0/CollegeApp.pdb
 /Users/xamyak/Desktop/CollegeApp/CollegeApp/obj/Debug/net7.0/CollegeApp.genruntimeconfig.cache
 /Users/xamyak/Desktop/CollegeApp/CollegeApp/obj/Debug/net7.0/ref/CollegeApp.dll
+/Users/xamyak/Desktop/CollegeApp/CollegeApp/bin/Debug/net7.0/Microsoft.AspNetCore.JsonPatch.dll
+/Users/xamyak/Desktop/CollegeApp/CollegeApp/bin/Debug/net7.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+/Users/xamyak/Desktop/CollegeApp/CollegeApp/bin/Debug/net7.0/Newtonsoft.Json.dll
+/Users/xamyak/Desktop/CollegeApp/CollegeApp/bin/Debug/net7.0/Newtonsoft.Json.Bson.dll
