@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using CollegeApp.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +25,7 @@ namespace CollegeApp.Controllers
                 }
             );
 
-            return Ok(CollegeRepository.Students);
+            return Ok(students);
         }
 
 
@@ -66,13 +67,19 @@ namespace CollegeApp.Controllers
             return Ok(student);
         }
         
+        
+        
+        
         [HttpPost]
         [Route("Create")]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public ActionResult<Student> CreateStudent([FromBody] Student model)
+        public ActionResult<StudentDTO> CreateStudent([FromBody] StudentDTO model)
         {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+                
             if (model == null)
                 return BadRequest();
 
@@ -87,11 +94,14 @@ namespace CollegeApp.Controllers
 
             CollegeRepository.Students?.Add(student);
             model.Id=student.Id;
-            return Ok(model);
+            return CreatedAtRoute("GetStudentById", new {id = student.Id}, model);
+         
 
         }
 
 
+        
+        
         [HttpDelete]
         [Route("{id:int}", Name = "DeleteStudentById")]
         [ProducesResponseType(200)]
