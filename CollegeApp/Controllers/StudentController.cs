@@ -77,11 +77,17 @@ namespace CollegeApp.Controllers
         [ProducesResponseType(500)]
         public ActionResult<StudentDTO> CreateStudent([FromBody] StudentDTO model)
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
+            // if(!ModelState.IsValid)
+            //     return BadRequest(ModelState);
                 
             if (model == null)
                 return BadRequest();
+
+            // if (model.AdmissionDate == DateTime.Now)
+            // {
+            //     ModelState.AddModelError("AdmissionDate", "Admission date cannot be the current date");
+            //     return BadRequest(ModelState);
+            // }
 
             int newId = CollegeRepository.Students.LastOrDefault().Id + 1;
             Student student = new Student
